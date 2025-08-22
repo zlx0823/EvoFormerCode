@@ -9,6 +9,19 @@ To install all the required dependencies for this project, please use the follow
 pip install -r requirements.txt
 ```
 
+
+## Create Random Walks
+
+As described in our paper, each graph at a specific time step is transformed into a collection of sentences through random walks.
+
+To generate these random walks, you can execute the `create_random_walks.py` script. The following parameters can be configured for random walk generation:
+- `p` and `q`: Control the traversal strategy in the graph, as detailed in the node2vec algorithm.
+- `walk_length` (L): Determines the maximum length of each sentence.
+- `num_walks` (gamma): Specifies the number of walks initiated from each node.
+
+```bash
+python create_random_walks.py
+```
 ## Running the Model
 
 To run the EvoFormer model training, use the following command from the `evoformer` directory:
