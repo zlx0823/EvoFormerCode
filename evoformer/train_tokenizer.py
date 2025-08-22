@@ -6,7 +6,7 @@ from tokenizers.trainers import WordLevelTrainer
 import pandas as pd
 from tqdm.auto import tqdm
 
-from transformers import PreTrainedTokenizerFast
+from fix_transformers import PreTrainedTokenizerFast
 from tokenizers import Tokenizer
 from tokenizers.models import WordLevel
 

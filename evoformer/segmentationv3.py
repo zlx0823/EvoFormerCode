@@ -6,7 +6,7 @@ from gurobipy import GRB, LinExpr, quicksum as qsum
 import time
 
 
-def Zou_funtion_for_summary(graph_embedding):
+def graph_summary(graph_embedding):
     summary_vector = np.mean(graph_embedding, axis=0)
     norms = np.linalg.norm(graph_embedding, axis=1) * np.linalg.norm(summary_vector)
     cosine_similarity = np.dot(graph_embedding, summary_vector) / norms
@@ -30,12 +30,12 @@ def Memoization(sub_segment, all_dis_dict, index_sub_segment):
         for i, o in enumerate(options):
             if i == 0:
                 if (o[1][0], o[1][1]) not in all_dis_dict:
-                    error, representative = Zou_funtion_for_summary(sub_segment[1:])
+                    error, representative = graph_summary(sub_segment[1:])
                     all_dis_dict[(o[1][0], o[1][1])] = [error, representative]
                 error_list.append(all_dis_dict[(o[0][0], o[0][1])][0] + all_dis_dict[(o[1][0], o[1][1])][0])
             if i == 1:
                 if (o[0][0], o[0][1]) not in all_dis_dict:
-                    error, representative = Zou_funtion_for_summary(sub_segment[0:2])
+                    error, representative = graph_summary(sub_segment[0:2])
                     all_dis_dict[(o[0][0], o[0][1])] = [error, representative]
                 error_list.append(all_dis_dict[(o[0][0], o[0][1])][0] + all_dis_dict[(o[1][0], o[1][1])][0])
         best_index = options[np.argmax(error_list)][0][1]
@@ -47,22 +47,22 @@ def Memoization(sub_segment, all_dis_dict, index_sub_segment):
         index_list = []
         error_list = []
         if (index_sub_segment[1], end) not in all_dis_dict:
-            error, representative = Zou_funtion_for_summary(sub_segment[1:])
+            error, representative = graph_summary(sub_segment[1:])
             all_dis_dict[(index_sub_segment[1], end)] = [error, representative]
         index_list.append([(start, start), (index_sub_segment[1], end)])
         error_list.append(0.5 + all_dis_dict[(index_sub_segment[1], end)][0])
         for j in index_sub_segment[1:-2]:
             anchor_index = index_sub_segment.index(j)
             if (start, j) not in all_dis_dict:
-                error, representative = Zou_funtion_for_summary(sub_segment[0:anchor_index + 1])
+                error, representative = graph_summary(sub_segment[0:anchor_index + 1])
                 all_dis_dict[(start, j)] = [error, representative]
             if (j + 1, end) not in all_dis_dict:
-                error, representative = Zou_funtion_for_summary(sub_segment[anchor_index + 1:])
+                error, representative = graph_summary(sub_segment[anchor_index + 1:])
                 all_dis_dict[(j + 1, end)] = [error, representative]
             index_list.append([(start, j), (j + 1, end)])
             error_list.append(all_dis_dict[(start, j)][0] + all_dis_dict[(j + 1, end)][0])
         if (start, index_sub_segment[-2]) not in all_dis_dict:
-            error, representative = Zou_funtion_for_summary(sub_segment[0:len(index_sub_segment) - 1])
+            error, representative = graph_summary(sub_segment[0:len(index_sub_segment) - 1])
             all_dis_dict[(start, index_sub_segment[-2])] = [error, representative]
         index_list.append([(start, index_sub_segment[-2]), (end, end)])
         error_list.append(all_dis_dict[(start, index_sub_segment[-2])][0] + 0.5)

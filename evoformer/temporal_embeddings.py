@@ -8,20 +8,11 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 import seaborn as sns
-
-from graphert.train_model import get_graph_tokenizer, tokenize_function, BertForMlmTemporalClassification, \
-    BertForTemporalClassification, TemporalAttentionLayer, generate_poc_aixs
+from evoformer.train_model import get_graph_tokenizer
+from evoformer.models import EvoFormer
 
 device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 def cls_emb(model, examples, t,use_poc):
-    # get per path the cls embedding and the probability for the gt time step
-    # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    # print(examples['poc_emd'][0][0].shape)
-    # print(len(examples['poc_emd']))
-    # print(len(examples['poc_emd'][0]))
-    # poc_emd = []
-    # for lis in examples['poc_emd']:
-    #     poc_emd.append(torch.stack(lis))
     model.bert.batch_size = examples['input_ids'].shape[0]
     outputs = model.bert(input_ids=examples['input_ids'].to(device),
                          attention_mask=examples['attention_mask'].to(device),
